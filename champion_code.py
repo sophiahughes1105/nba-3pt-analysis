@@ -46,15 +46,18 @@ def read_data(filename):
                              for val in v] for k, v in data_dict.items()}
     
     # extracting headers that are not 'Team' or 'Season'
-    misc_headers = [i for i in headers if i != 'Team' and i != 'Season']
-    
-    # adding key/value pairs to the team_dict from the dictionaries cleaned
-    # above
-    for i in range(len(data_dict_cleaned['Season'])):
-        team_dict[(data_dict_cleaned['Season'][i], 
-                   data_dict_cleaned['Team'][i])] = [data_dict_cleaned[j][i] 
-                    for j in misc_headers]
-    
+    # determine which column is the year column
+    year_col = 'Year' if 'Year' in headers else 'Season'
+
+    # remove Team and the year column from misc headers
+    misc_headers = [i for i in headers if i not in ['Team', year_col]]
+
+    # build dictionary
+    for i in range(len(data_dict_cleaned[year_col])):
+        team_dict[(data_dict_cleaned[year_col][i],
+               data_dict_cleaned['Team'][i])] = [
+                   data_dict_cleaned[j][i] for j in misc_headers]
+
     return team_dict
  
 def champions(data):
